@@ -2,47 +2,38 @@
 
 import requests
 
+def more(text):
+    count = 0
+    for line in text.split('\n'):
+        print(line)
+        count += 1
+        if count % 30 == 0:
+            reply = input('Show more (y/n)? ')
+            if reply == 'n':
+                break
+
 url = input('Give URL: ')
-response = requests.get(url)
-headers = response.headers
-print(headers)
+
+with requests.get(url) as response:
+    headers = response.headers
+    print(headers)
 
 # a
-print('\nServer software: ', headers.get('Server'))
+    server = headers.get('Server')
+    if server:
+        print('\nServer software: ', server)
+    else:
+        print('\nNo server found')
 
 # b
-cookies = response.cookies
-if len(cookies) != 0:
-    print('\nWebpage is using cookies')
+    cookies = response.cookies
+    if len(cookies) != 0:
+        print('\nWebpage is using cookies')
 
 # c
-    for cookie in cookies:
-        print('Cookie name: '+ cookie.name)
-        print('Cookie expiration time: '+ str(cookie.expires))
+        for cookie in cookies:
+            print('Cookie name: ', cookie.name)
+            print('Cookie expiration time: ', str(cookie.expires))
     
-else:
-    print('\nWebpage is NOT using cookies')
-
-# Source: https://stackoverflow.com/questions/22577182/python-get-cookie-expiry-time-using-the-requests-library
-
-#b
-#if 'Set-Cookie' in headers:
-    #print('Webpage is using cookies')
-
-#c
-    #cookies = headers['Set-Cookie'].split(',')
-    #for cookie in cookies:
-        #cookie_parts = cookie.split(';')
-        #cookie_name = cookie_parts[0].split('=')[0].strip()
-        #expires = None
-        #for part in cookie_parts:
-            #if part.strip().startswith('Expires='):
-                #expires = part.split('=')[1].strip()
-                #expires = datetime.strptime(expires, '%a, %d %b %Y %H:%M:%S %Z')
-                #break
-        #if expires:
-            #print("Cookie:", cookie_name, "Expires:", expires)
-        #else:
-            #print("Cookie:", cookie_name, "Expires: None")
-#else:
-    #print('Webpage is not using cookies')
+    else:
+        print('\nWebpage is NOT using cookies')
